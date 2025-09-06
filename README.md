@@ -37,6 +37,7 @@ com.smarthealthcare.appointment
 ├── exception # Custom exceptions and global handler
 └── SmartHealthcareApplication.java
 
+---
 ## 4. User Roles
 
 - **ADMIN:** Can manage doctors (add, update, delete), view all data
