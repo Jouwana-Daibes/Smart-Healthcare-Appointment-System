@@ -112,6 +112,7 @@ com.smarthealthcare.appointment
 1. Clone the repo:  
 ```bash
 git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.git
+```
 ---
  - Configure application.properties with your database credentials.
 
