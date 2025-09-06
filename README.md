@@ -36,7 +36,7 @@ com.smarthealthcare.appointment
 ├── service # Business logic services
 ├── exception # Custom exceptions and global handler
 └── SmartHealthcareApplication.java
-
+```
 
 ---
 
