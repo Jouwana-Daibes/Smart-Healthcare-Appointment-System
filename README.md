@@ -120,6 +120,6 @@ git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.
 
    - mvn spring-boot:run
 
-- Test endpoints using Postman or any REST client.
+- Test endpoints using Postman.
 
 
