@@ -37,7 +37,9 @@ com.smarthealthcare.appointment
 ├── exception # Custom exceptions and global handler
 └── SmartHealthcareApplication.java
 
+
 ---
+
 ## 4. User Roles
 
 - **ADMIN:** Can manage doctors (add, update, delete), view all data
@@ -52,7 +54,7 @@ com.smarthealthcare.appointment
 - Login: `/api/auth/login` (PUBLIC)
 - JWT tokens required for all other endpoints
 - Include JWT in `Authorization` header:
-Authorization: Bearer <your-jwt-token>
+
 ---
 
 ## 6. Doctor Management
