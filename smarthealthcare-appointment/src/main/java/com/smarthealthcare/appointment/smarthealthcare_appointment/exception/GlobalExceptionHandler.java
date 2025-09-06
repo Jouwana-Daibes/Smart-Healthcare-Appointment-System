@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
                 )
         );
     }
-    
+
     // Handle generic runtime exceptions
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity<Map<String, Object>> handleRuntimeException(RuntimeException ex) {

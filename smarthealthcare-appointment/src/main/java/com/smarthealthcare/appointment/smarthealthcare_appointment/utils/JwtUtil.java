@@ -1,5 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.utils;
 
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -18,32 +19,46 @@ public class JwtUtil {
     private final String secretKey = "secretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKeysecretKey";
     private final long secretKeyExpirationTimeMs = 3600000; // 1 hour
 
+
+
     // Generate JWT token
     public String generateToken(String username, Set<String> roles){
-       return Jwts.builder()
-               .setSubject(username)
-               .claim("roles", roles)
-               .setIssuedAt(new Date())
-               .setExpiration(new Date(System.currentTimeMillis() + secretKeyExpirationTimeMs))
-               .signWith(SignatureAlgorithm.HS256, secretKey)
-               .compact();
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("roles", roles)
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + secretKeyExpirationTimeMs))
+                .signWith(SignatureAlgorithm.HS256, secretKey)
+                .compact();
     }
 
-    // Validate JWT token
-    public boolean validateToken(String token) {
+    // Validate token
+    public boolean validateToken(String token, String username) {
         try {
-            Jwts.parser().setSigningKey(secretKey).parseClaimsJwt(token);
-            return true;
-        } catch (JwtException e) {
+            String extractedUsername = extractUsername(token);
+            return (extractedUsername.equals(username) && !isTokenExpired(token));
+        } catch (JwtException | IllegalArgumentException e) {
+            // JwtException covers expired, malformed, unsupported, signature exceptions
             return false;
         }
     }
 
-    // Extract username from token
-    public String getUsername(String token) {
-        return Jwts.parser().setSigningKey(secretKey)
+    // Check expiration
+    private boolean isTokenExpired(String token) {
+        return parseClaims(token).getExpiration().before(new Date());
+    }
+
+    // Helper method to parse claims
+    private Claims parseClaims(String token) {
+        return Jwts.parserBuilder()
+                .setSigningKey(secretKey)
+                .build()
                 .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+                .getBody();
+    }
+
+    // Extract username from token
+    public String extractUsername(String token) {
+        return parseClaims(token).getSubject();
     }
 }
