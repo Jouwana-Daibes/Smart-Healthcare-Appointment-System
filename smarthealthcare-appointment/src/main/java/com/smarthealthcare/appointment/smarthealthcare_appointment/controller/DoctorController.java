@@ -4,11 +4,13 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.controller;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.service.DoctorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * REST controller for managing doctor-related endpoints.
@@ -42,31 +44,37 @@ public class DoctorController {
     // READ by id
     @GetMapping("/{id}")
     @PreAuthorize("hasAnyRole('ADMIN','PATIENT','DOCTOR')")
-    public Doctor getDoctorById(@PathVariable Long id) {
-        return doctorService.getDoctorById(id);
+    public ResponseEntity<Doctor> getDoctorById(@PathVariable Long id) {
+        return doctorService.getDoctorById(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
 
     // Whole update (replace) - but not changing id
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Doctor replaceDoctor(@PathVariable Long id, @RequestBody Doctor updatedDoctor) {
-        return doctorService.updateDoctor(id, updatedDoctor);
+    public ResponseEntity<Doctor> replaceDoctor(@PathVariable Long id, @RequestBody Doctor updatedDoctor) {
+        return doctorService.updateDoctor(id, updatedDoctor)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Partial update
     @PatchMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public Doctor patchDoctor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
-        return doctorService.patchDoctor(id, updates);
+    public ResponseEntity<Doctor> patchDoctor(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        return doctorService.patchDoctor(id, updates)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     // Delete doctor By id
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public String deleteDoctorById(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteDoctorById(@PathVariable Long id) {
         doctorService.deleteDoctor(id);
-        return "Doctor with ID " + id + " is deleted successfully";
+        return ResponseEntity.noContent().build(); //  Returns 204
     }
 
 }

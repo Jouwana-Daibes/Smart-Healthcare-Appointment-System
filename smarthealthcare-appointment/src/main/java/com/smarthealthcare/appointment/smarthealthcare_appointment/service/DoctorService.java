@@ -41,9 +41,8 @@ public class DoctorService {
     }
 
     // Read by id
-    public Doctor getDoctorById(Long id) {
-        return doctorRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Doctor with id " + id + " is not found!"));
+    public Optional<Doctor> getDoctorById(Long id) {
+        return doctorRepository.findById(id);
     }
 
     // Delete doctor
@@ -55,7 +54,7 @@ public class DoctorService {
     }
 
 
-    public Doctor patchDoctor(Long id, Map<String, Object> updates) {
+    public Optional<Doctor> patchDoctor(Long id, Map<String, Object> updates) {
           Doctor doctor = doctorRepository.findById(id)
                   .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id + " is not found!"));
 
@@ -68,19 +67,20 @@ public class DoctorService {
               }
           });
 
-          return doctorRepository.save(doctor);
+          return Optional.of(doctor);
     }
 
-    public Doctor updateDoctor(Long id, Doctor doctor){
+    public Optional<Doctor> updateDoctor(Long id, Doctor doctor){
         Doctor updatedDoctor = doctorRepository.findById(id)
-                .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id+ " is not found!"));
+                .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id + " not found"));
+
 
         updatedDoctor.setName(doctor.getName());
         updatedDoctor.setEmail(doctor.getEmail());
         updatedDoctor.setSpeciality(doctor.getSpeciality());
-        updatedDoctor.setEmail(doctor.getEmail());
+        updatedDoctor.setAvailability(doctor.getAvailability());
         doctorRepository.save(updatedDoctor);
-        return updatedDoctor;
+        return  Optional.of(updatedDoctor);
     }
 }
 
