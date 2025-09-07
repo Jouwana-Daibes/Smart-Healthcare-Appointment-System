@@ -67,13 +67,13 @@ public class DoctorService {
               }
           });
 
-          return Optional.of(doctor);
+        doctorRepository.save(doctor);
+        return Optional.of(doctor);
     }
 
     public Optional<Doctor> updateDoctor(Long id, Doctor doctor){
         Doctor updatedDoctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id + " not found"));
-
 
         updatedDoctor.setName(doctor.getName());
         updatedDoctor.setEmail(doctor.getEmail());

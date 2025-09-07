@@ -55,4 +55,11 @@ public class GlobalExceptionHandler {
         );
     }
 
+    // handle patient updating another patient info
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<String> handleSecurityException(SecurityException ex) {
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).body(ex.getMessage());
+    }
+
+
 }
