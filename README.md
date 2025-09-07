@@ -168,4 +168,23 @@ The following CRUD operations are covered:
 - Business logic should be tested separately in service-layer unit tests.  
 - Mocked dependencies ensure isolation and reproducibility of tests.
 
+  ## Patient Management
+
+The Patient Management module of the Smart Healthcare Appointment System includes the following functionalities:
+
+### a. Admin Registers New Patients
+- Only users with the `ADMIN` role can create/register new patients.
+- Admin provides patient details: name, email.
+- The system stores patient data in the database.
+
+### b. Patients Update Their Personal Details
+- Patients can update their own profile information.
+- Security checks ensure that a patient can only update their own details, not other patients' data.
+- Fields that can be updated include:
+  - `name`
+  - `email`
+- All updates are saved to the database.
+
+
+
 
