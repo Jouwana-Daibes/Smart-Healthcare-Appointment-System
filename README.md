@@ -122,4 +122,50 @@ git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.
 
 - Test endpoints using Postman.
 
+## DoctorControllerTest
+
+ - This module contains unit tests for the `DoctorController` REST API endpoints in the Smart Healthcare Appointment System.
+ - The `DoctorControllerTest` class tests the **web layer** (controller) using `@WebMvcTest` without starting the full Spring Boot application context.  
+
+- Key points:
+
+  - **Mocked dependencies**: `DoctorService` is mocked using `@MockBean` to isolate the controller logic.  
+  - **HTTP simulation**: `MockMvc` is used to simulate HTTP requests and verify responses.  
+  - **JSON handling**: `ObjectMapper` is used to serialize request bodies and deserialize response bodies.  
+  - **Security**: Endpoints can be secured with roles (e.g., `ADMIN`) and tested using `@WithMockUser`.
+
+## Tested Operations
+
+The following CRUD operations are covered:
+
+### CREATE
+- **Success**: Verifies that a doctor can be created and response status is `200 OK`.  
+- **Duplicate Email**: Verifies that creating a doctor with an existing email returns `400 Bad Request`.  
+
+### READ
+- **Get All Doctors - Success**: Returns a list of doctors with response status `200 OK`.  
+- **Get All Doctors - Empty List**: Returns an empty list with response status `200 OK`.  
+- **Get Doctor By ID - Success**: Returns the doctor details for a valid ID with response status `200 OK`.  
+- **Get Doctor By ID - Not Found**: Returns `404 Not Found` for a non-existent doctor ID.  
+
+### UPDATE
+- **Update Doctor - Success**: Updates an existing doctor and returns the updated data with `200 OK`.  
+- **Update Doctor - Not Found**: Returns `404 Not Found` when updating a non-existent doctor.  
+
+### DELETE
+- **Delete Doctor - Success**: Deletes a doctor with response status `204 No Content`.  
+- **Delete Doctor - Not Found**: Returns `404 Not Found` when deleting a non-existent doctor.
+
+## Security Testing
+
+- Endpoints can be restricted to certain roles using Spring Security annotations (e.g., `@PreAuthorize("hasRole('ADMIN')")`).  
+- Role-based access is tested using the `@WithMockUser(roles = {"ADMIN"})` annotation in tests.  
+- Mocked `JwtUtil` and `CustomUserDetailsService` are used to bypass real authentication while testing role restrictions.
+
+## Notes
+
+- These tests focus on **controller behavior** and **HTTP responses**.  
+- Business logic should be tested separately in service-layer unit tests.  
+- Mocked dependencies ensure isolation and reproducibility of tests.
+
 
