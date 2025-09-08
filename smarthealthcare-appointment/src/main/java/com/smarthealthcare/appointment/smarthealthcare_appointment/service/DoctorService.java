@@ -97,5 +97,12 @@ public class DoctorService {
         Doctor newDoctor = doctorRepository.save(updatedDoctor);
         return  EntityMapper.toDoctorDTO(newDoctor);
     }
+
+    public List<DoctorDTO> findDoctorsBySpeciality(String speciality) {
+        List<Doctor> doctors = doctorRepository.findBySpecialityIgnoreCaseContaining(speciality);
+        return doctors.stream()
+                .map(EntityMapper::toDoctorDTO)
+                .toList();
+    }
 }
 

@@ -1,5 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.repository;
 
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,6 +15,7 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     List<Doctor> findAll();
     Optional<Doctor> findById(Long id);
     void deleteById(Long id);
+    List<Doctor> findBySpecialityIgnoreCaseContaining(String Speciality);
 
 
 }

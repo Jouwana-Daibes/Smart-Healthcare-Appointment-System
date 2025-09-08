@@ -42,7 +42,7 @@ public class DoctorController {
     }
 
     // READ by id
-    @GetMapping("/{id}")
+    @GetMapping(params = "id")
     public ResponseEntity<DoctorDTO> getDoctorById(@PathVariable Long id) {
         return ResponseEntity.ok(doctorService.getDoctorById(id));
     }
@@ -66,5 +66,13 @@ public class DoctorController {
         doctorService.deleteDoctor(id);
         return ResponseEntity.noContent().build(); //  Returns 204
     }
+
+    // GET /api/doctors/search?specialty=cardiology
+    @GetMapping(value = "/search", params = "speciality")
+    public ResponseEntity<List<DoctorDTO>> getDoctorBySpeciality(@RequestParam String speciality) {
+        List<DoctorDTO> doctors = doctorService.findDoctorsBySpeciality(speciality);
+        return ResponseEntity.ok(doctors);
+    }
+
 
 }
