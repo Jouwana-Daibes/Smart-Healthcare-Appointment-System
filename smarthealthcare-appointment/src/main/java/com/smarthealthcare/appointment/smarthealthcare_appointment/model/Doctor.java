@@ -1,5 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 @Entity
@@ -16,16 +17,20 @@ public class Doctor {
     private String speciality;
     private String availability;
 
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
+    private User user;
 
     public Doctor() {
     }
 
-    public Doctor(Long id, String email, String name, String speciality, String availability) {
+    public Doctor(Long id, String email, String name, String speciality, String availability, User user) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.speciality = speciality;
         this.availability = availability;
+        this.user = user;
     }
 
     public Long getId() {
@@ -68,6 +73,14 @@ public class Doctor {
         this.availability = availability;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
@@ -76,6 +89,7 @@ public class Doctor {
                 ", name='" + name + '\'' +
                 ", speciality='" + speciality + '\'' +
                 ", availability='" + availability + '\'' +
+                ", user=" + user +
                 '}';
     }
 }

@@ -54,8 +54,15 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception{
         http.csrf(csrf -> csrf.disable()) // CSRF is disabled because we’re using JWT in REST APIs, not browser sessions.
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/api/auth/**").permitAll()  // public (login/register)
+                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/register/doctor").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/register/patient").hasRole("ADMIN")
+                        .requestMatchers("/api/auth/register/admin").permitAll()
                         .requestMatchers(HttpMethod.GET, "/api/doctors/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                        .requestMatchers(HttpMethod.GET, "/api/patients/**").hasAnyRole("ADMIN", "DOCTOR", "PATIENT")
+                        .requestMatchers(HttpMethod.PUT, "/api/patients/**").hasAnyRole("ADMIN", "PATIENT")
+                        .requestMatchers(HttpMethod.PATCH, "/api/patients/**").hasAnyRole("ADMIN", "PATIENT")
+                        .requestMatchers("/api/patients/**").hasRole("ADMIN")
                         .requestMatchers("/api/doctors/**").hasRole("ADMIN")
                         .anyRequest().authenticated()
                 )

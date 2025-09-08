@@ -15,5 +15,5 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findByUsername(String username);
 
     // Check if a user with the same username and roles already exists
-    boolean existsByUsernameAndRoles(String username, String roles);
+  //  boolean existsByUsernameAndRoles(String username, String roles);
 }

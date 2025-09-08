@@ -27,14 +27,21 @@ public class User {
 
     // This mapping makes sure each user can have one or more roles, stored in a separate join table like user_roles.
     @ElementCollection(fetch = FetchType.EAGER)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.STRING)   // Saves enum names as text in DB
     private Set<Role> roles;
+
+    // link to doctor (nullable if not a doctor)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL )
+    private Doctor doctor;
+
+    // Link to patient (nullable if not a patient)
+    @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+    private Patient patient;
 
     public User() {
     }
 
-    public User(Long id, String username, String password, Set<Role> roles) {
-        this.id = id;
+    public User(String username, String password, Set<Role> roles) {
         this.username = username;
         this.password = password;
         this.roles = roles;
@@ -72,6 +79,14 @@ public class User {
         this.roles = roles;
     }
 
+    public Doctor getDoctor() {
+        return doctor;
+    }
+
+    public void setDoctor(Doctor doctor) {
+        this.doctor = doctor;
+    }
+
     @Override
     public String toString() {
         return "User{" +
@@ -79,6 +94,16 @@ public class User {
                 ", username='" + username + '\'' +
                 ", password='" + password + '\'' +
                 ", roles=" + roles +
+                ", doctor=" + doctor +
+                ", patient=" + patient +
                 '}';
+    }
+
+    public Patient getPatient() {
+        return patient;
+    }
+
+    public void setPatient(Patient patient) {
+        this.patient = patient;
     }
 }
