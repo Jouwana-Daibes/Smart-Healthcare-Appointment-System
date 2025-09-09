@@ -1,23 +1,29 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.requestDTOs;
 
+import java.time.LocalDateTime;
+
 public class RegistrationDoctorRequest {
     private String username;
     private String password;
     private String name;
     private String email;
     private String speciality;
-    private String availability;
+    LocalDateTime startTime;        // e.g., 09:00
+    LocalDateTime endTime;           // e.g., 17:00
+    String availableDays;
 
     public RegistrationDoctorRequest() {
     }
 
-    public RegistrationDoctorRequest(String username, String password, String name, String email, String speciality, String availability) {
+    public RegistrationDoctorRequest(String username, String password, String name, String email, String speciality, LocalDateTime startTime, LocalDateTime endTime, String availableDays) {
         this.username = username;
         this.password = password;
         this.name = name;
         this.email = email;
         this.speciality = speciality;
-        this.availability = availability;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.availableDays = availableDays;
     }
 
     public String getUsername() {
@@ -60,12 +66,28 @@ public class RegistrationDoctorRequest {
         this.speciality = speciality;
     }
 
-    public String getAvailability() {
-        return availability;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setAvailability(String availability) {
-        this.availability = availability;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(String availableDays) {
+        this.availableDays = availableDays;
     }
 
     @Override
@@ -76,7 +98,9 @@ public class RegistrationDoctorRequest {
                 ", name='" + name + '\'' +
                 ", email='" + email + '\'' +
                 ", speciality='" + speciality + '\'' +
-                ", availability='" + availability + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", availableDays='" + availableDays + '\'' +
                 '}';
     }
 }

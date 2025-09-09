@@ -67,7 +67,9 @@ public class AuthController {
         doctor.setName(request.getName());
         doctor.setEmail(request.getEmail());
         doctor.setSpeciality(request.getSpeciality());
-        doctor.setAvailability(request.getAvailability());
+        doctor.setStartTime(request.getStartTime());
+        doctor.setEndTime(request.getEndTime());
+        doctor.setAvailableDays(request.getAvailableDays());
 
         DoctorDTO savedDoctor = authService.registerDoctor(user, doctor);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedDoctor);

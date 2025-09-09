@@ -11,9 +11,12 @@ import java.util.Optional;
 @Repository
 public interface PatientRepository extends JpaRepository<Patient, Long> {
     Optional<Patient> findByEmail(String email);
+    Optional<Patient> findByName(String name);
     Patient save(Patient patient);
     Optional<Patient> findById(Long id);
+    Optional<Patient> findByUserId(Long userId);
     // Return only the foreign key userId
     @Query("SELECT p.user.id FROM Patient p WHERE p.id = :id")
     Long findUserIdByPatientId(@Param("id") Long patientId);
+   // Optional<Patient> findUserIdByUsername(String username);
 }

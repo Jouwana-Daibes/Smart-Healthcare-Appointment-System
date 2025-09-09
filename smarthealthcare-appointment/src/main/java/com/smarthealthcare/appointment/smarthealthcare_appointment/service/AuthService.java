@@ -63,6 +63,11 @@ public class AuthService {
         if (user.getPassword() == null || user.getPassword().isEmpty())
             throw new IllegalArgumentException("Password cannot be null or empty");
 
+        // Validate start and end time
+        if (doctor.getEndTime().isBefore(doctor.getEndTime()) ||
+                doctor.getEndTime().equals(doctor.getStartTime())) {
+            throw new IllegalArgumentException("Doctor end time must be after start time");
+        }
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         user.setRoles(Set.of(Role.DOCTOR));
 

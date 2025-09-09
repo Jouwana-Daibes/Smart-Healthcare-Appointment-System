@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -76,7 +77,9 @@ public class DoctorService {
                   case "email" -> doctor.setEmail((String) value);
                   case "name"  -> doctor.setName((String) value);
                   case "speciality" -> doctor.setSpeciality((String) value);
-                  case "availability" -> doctor.setAvailability((String) value);
+                  case "startTime" -> doctor.setStartTime((LocalDateTime) value);
+                  case "endTime" -> doctor.setEndTime((LocalDateTime) value);
+                  case "availableDays" -> doctor.setAvailableDays((String) value);
                   case "username" -> user.getUsername();
                   case "password" -> user.setPassword(passwordEncoder.encode(user.getPassword()));
               }
@@ -93,7 +96,9 @@ public class DoctorService {
         updatedDoctor.setName(doctor.getName());
         updatedDoctor.setEmail(doctor.getEmail());
         updatedDoctor.setSpeciality(doctor.getSpeciality());
-        updatedDoctor.setAvailability(doctor.getAvailability());
+        updatedDoctor.setStartTime(doctor.getStartTime());
+        updatedDoctor.setEndTime(doctor.getEndTime());
+        updatedDoctor.setAvailableDays(doctor.getAvailableDays());
         Doctor newDoctor = doctorRepository.save(updatedDoctor);
         return  EntityMapper.toDoctorDTO(newDoctor);
     }

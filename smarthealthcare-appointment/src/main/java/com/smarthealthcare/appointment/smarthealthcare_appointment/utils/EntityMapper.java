@@ -21,7 +21,9 @@ public class EntityMapper {
                 doctor.getName(),
                 doctor.getEmail(),
                 doctor.getSpeciality(),
-                doctor.getAvailability(),
+                doctor.getStartTime(),
+                doctor.getEndTime(),
+                doctor.getAvailableDays(),
                 toUserDTO(doctor.getUser())
         );
     }

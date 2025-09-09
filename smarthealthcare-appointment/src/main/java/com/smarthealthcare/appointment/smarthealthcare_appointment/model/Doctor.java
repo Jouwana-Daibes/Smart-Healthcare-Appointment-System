@@ -3,6 +3,11 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.model;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "doctors")
 public class Doctor {
@@ -15,22 +20,33 @@ public class Doctor {
     private String email;
     private String name;
     private String speciality;
-    private String availability;
+    //private LocalDateTime availability;
+    // Recurring schedule
+    private LocalDateTime startTime;         // e.g., 09:00
+    private LocalDateTime endTime;           // e.g., 17:00
+    private String availableDays;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
     private User user;
 
+    // Doctor can have many appointments
+    @OneToMany(mappedBy = "doctor", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Appointment> appointments = new ArrayList<>();
+
     public Doctor() {
     }
 
-    public Doctor(Long id, String email, String name, String speciality, String availability, User user) {
+    public Doctor(Long id, String email, String name, String speciality, LocalDateTime startTime, LocalDateTime endTime, String availableDays, User user, List<Appointment> appointments) {
         this.id = id;
         this.email = email;
         this.name = name;
         this.speciality = speciality;
-        this.availability = availability;
+        this.startTime = startTime;
+        this.endTime = endTime;
+        this.availableDays = availableDays;
         this.user = user;
+        this.appointments = appointments;
     }
 
     public Long getId() {
@@ -65,12 +81,28 @@ public class Doctor {
         this.speciality = speciality;
     }
 
-    public String getAvailability() {
-        return availability;
+    public LocalDateTime getStartTime() {
+        return startTime;
     }
 
-    public void setAvailability(String availability) {
-        this.availability = availability;
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public LocalDateTime getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(LocalDateTime endTime) {
+        this.endTime = endTime;
+    }
+
+    public String getAvailableDays() {
+        return availableDays;
+    }
+
+    public void setAvailableDays(String availableDays) {
+        this.availableDays = availableDays;
     }
 
     public User getUser() {
@@ -81,6 +113,14 @@ public class Doctor {
         this.user = user;
     }
 
+    public List<Appointment> getAppointments() {
+        return appointments;
+    }
+
+    public void setAppointments(List<Appointment> appointments) {
+        this.appointments = appointments;
+    }
+
     @Override
     public String toString() {
         return "Doctor{" +
@@ -88,8 +128,11 @@ public class Doctor {
                 ", email='" + email + '\'' +
                 ", name='" + name + '\'' +
                 ", speciality='" + speciality + '\'' +
-                ", availability='" + availability + '\'' +
+                ", startTime=" + startTime +
+                ", endTime=" + endTime +
+                ", availableDays='" + availableDays + '\'' +
                 ", user=" + user +
+                ", appointments=" + appointments +
                 '}';
     }
 }

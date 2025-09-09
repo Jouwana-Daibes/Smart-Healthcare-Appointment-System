@@ -3,14 +3,14 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.respons
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 
-public record DoctorDTO(
+public record AppointmentResponse(
         Long id,
-        String name,
-        String email,
-        String speciality,
-        // Recurring schedule
+        Long doctorId,
+        Long patientId,
         LocalDateTime startTime,         // e.g., 09:00
         LocalDateTime endTime,           // e.g., 17:00
-        String availableDays,
-        UserDTO user
+        String Days,
+        String status,
+        String doctorName,
+        String patientName
 ) {}
