@@ -1,16 +1,21 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.controller;
 
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.MedicalRecordResponseDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.PatientDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.MedicalRecord;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Patient;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.service.MedicalRecordService;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.service.PatientService;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,10 +25,12 @@ import java.util.Optional;
 public class PatientController {
 
     private final PatientService patientService;
+    private final MedicalRecordService medicalRecordService;
 
     @Autowired
-    public PatientController(PatientService patientService) {
+    public PatientController(PatientService patientService, MedicalRecordService medicalRecordService) {
         this.patientService = patientService;
+        this.medicalRecordService = medicalRecordService;
     }
 
 //    // admin registers new patients
@@ -65,6 +72,17 @@ public class PatientController {
         patientService.deletePatient(id);
         return ResponseEntity.noContent().build(); //  Returns 204
     }
+
+    @GetMapping("/MyRecords")
+    public ResponseEntity<List<MedicalRecordResponseDTO>> getMyRecords(Long patientId) {
+        List<MedicalRecordResponseDTO> recordsDTOs = new ArrayList<>();
+        List<MedicalRecord> records = medicalRecordService.getRecordsByPatientId(patientId);
+        for(MedicalRecord record : records){
+            recordsDTOs.add(EntityMapper.toRecordDTO(record));
+        }
+        return ResponseEntity.ok(recordsDTOs);
+    }
+
 
 
 

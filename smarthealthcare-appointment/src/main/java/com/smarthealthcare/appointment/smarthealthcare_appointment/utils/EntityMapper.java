@@ -3,8 +3,6 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.utils;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.*;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.*;
 
-import java.time.LocalDateTime;
-
 public class EntityMapper {
     public static UserDTO toUserDTO(User user) {
         return new UserDTO(
@@ -57,6 +55,16 @@ public class EntityMapper {
                 patient.getName(),
                 patient.getEmail(),
                 toUserDTO(patient.getUser())
+        );
+    }
+
+    public static MedicalRecordResponseDTO toRecordDTO(MedicalRecord record) {
+        return new MedicalRecordResponseDTO(
+                record.getId(),
+                record.getRecordDate(),
+                record.getPrescriptions(),
+                record.getLabReports(),
+                record.getNotes()
         );
     }
 

@@ -5,10 +5,7 @@ import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.response
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserAlreadyExistsException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserNotFoundException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.*;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.AppointmentRepository;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PatientRepository;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PrescriptionRepository;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.UserRepository;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.*;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,14 +28,18 @@ public class PatientService {
     private final UserRepository userRepository;
     private PrescriptionRepository prescriptionRepository;
     private AppointmentRepository appointmentRepository;
+    private final MedicalRecordRepository medicalRecordRepository;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, PrescriptionRepository prescriptionRepository, AppointmentRepository appointmentRepository) {
+    public PatientService(PatientRepository patientRepository, PasswordEncoder passwordEncoder,
+                          UserRepository userRepository, PrescriptionRepository prescriptionRepository,
+                          AppointmentRepository appointmentRepository, MedicalRecordRepository medicalRecordRepository) {
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.prescriptionRepository = prescriptionRepository;
         this.appointmentRepository = appointmentRepository;
+        this.medicalRecordRepository = medicalRecordRepository;
     }
 
 //    // Admin registers new patient
@@ -108,9 +109,14 @@ public class PatientService {
                 prescriptionRepository.deleteByPatientId(id);
             }
 
-        List<Appointment> appointments = appointmentRepository.findByDoctorId(id);
+        List<Appointment> appointments = appointmentRepository.findByPatientId(id);
         for(Appointment appointment : appointments){
                 prescriptionRepository.deleteByPatientId(id);
+        }
+
+        List<MedicalRecord> records = medicalRecordRepository.findByPatientId(id);
+        for(Appointment appointment : appointments){
+            medicalRecordRepository.deleteByPatientId(id);
         }
     }
 

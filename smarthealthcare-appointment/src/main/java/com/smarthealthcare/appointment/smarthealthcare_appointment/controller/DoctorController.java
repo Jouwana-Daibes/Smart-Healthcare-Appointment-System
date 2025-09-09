@@ -1,9 +1,14 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.controller;
 
 
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.requestDTOs.MedicalRecordRequestDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.MedicalRecordResponseDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.MedicalRecord;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.service.DoctorService;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.service.MedicalRecordService;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -22,10 +27,12 @@ import java.util.Optional;
 public class DoctorController {
 
     private final DoctorService doctorService;
+    private MedicalRecordService medicalRecordService;
 
     @Autowired
-    public DoctorController(DoctorService doctorService) {
+    public DoctorController(DoctorService doctorService, MedicalRecordService medicalRecordService) {
         this.doctorService = doctorService;
+        this.medicalRecordService = medicalRecordService;
     }
 
 //    // Create (insert) / replace Doctor
@@ -73,6 +80,15 @@ public class DoctorController {
         List<DoctorDTO> doctors = doctorService.findDoctorsBySpeciality(speciality);
         return ResponseEntity.ok(doctors);
     }
+
+    @PostMapping("/records/{doctorId}")
+    public ResponseEntity<MedicalRecordResponseDTO> createRecord(
+            @RequestBody MedicalRecordRequestDTO request,
+            @PathVariable Long doctorId) {
+        MedicalRecord record = medicalRecordService.addRecord(request, doctorId);
+        return ResponseEntity.ok(EntityMapper.toRecordDTO(record));
+    }
+
 
 
 }
