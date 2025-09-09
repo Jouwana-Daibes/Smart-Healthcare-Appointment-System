@@ -1,11 +1,9 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.utils;
 
-import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.PatientDTO;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.UserDTO;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Patient;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.User;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.*;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.*;
+
+import java.time.LocalDateTime;
 
 public class EntityMapper {
     public static UserDTO toUserDTO(User user) {
@@ -28,6 +26,30 @@ public class EntityMapper {
         );
     }
 
+    public static AppointmentResponse toAppointment(Appointment appointment) {
+        return new AppointmentResponse(
+                appointment.getId(),
+                appointment.getDoctor().getId(),
+                appointment.getPatient().getId(),
+                appointment.getAppointmentStartTime(),
+                appointment.getAppointmentEndTime(),
+                appointment.getAppointmentDay(),
+                appointment.getStatus(),
+                appointment.getDoctor().getName(),
+                appointment.getPatient().getName()
+        );
+    }
+
+    public static PrescriptionResponse toPrescription(Prescription prescription) {
+        return new PrescriptionResponse(
+                prescription.getId(),
+                prescription.getDoctorId(),
+                prescription.getDoctorName(),
+                prescription.getPatientId(),
+                prescription.getPatientName(),
+                prescription.getMedicines()
+        );
+    }
 
     public static PatientDTO toPatientDTO(Patient patient) {
         return new PatientDTO(

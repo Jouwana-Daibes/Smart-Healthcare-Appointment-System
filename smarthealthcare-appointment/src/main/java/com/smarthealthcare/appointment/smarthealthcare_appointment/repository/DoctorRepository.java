@@ -16,6 +16,8 @@ public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Optional<Doctor> findById(Long id);
     void deleteById(Long id);
     List<Doctor> findBySpecialityIgnoreCaseContaining(String Speciality);
+    Optional<Doctor> findByUserId(Long id);
+
 
 
 }

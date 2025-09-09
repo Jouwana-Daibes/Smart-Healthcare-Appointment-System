@@ -3,10 +3,16 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.service;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserAlreadyExistsException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserNotFoundException;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Appointment;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Prescription;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.User;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.AppointmentRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.DoctorRepository;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PrescriptionRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
+import jakarta.persistence.Persistence;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -26,11 +32,15 @@ public class DoctorService {
 
     private final DoctorRepository doctorRepository;
     private final PasswordEncoder passwordEncoder;
+    private PrescriptionRepository prescriptionRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public DoctorService(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder) {
+    public DoctorService(DoctorRepository doctorRepository, PasswordEncoder passwordEncoder, PrescriptionRepository prescriptionRepository, AppointmentRepository appointmentRepository) {
         this.doctorRepository = doctorRepository;
         this.passwordEncoder = passwordEncoder;
+        this.prescriptionRepository = prescriptionRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
 //    // Create doctor
@@ -59,11 +69,23 @@ public class DoctorService {
     }
 
     // Delete doctor
+    @Transactional
+    //TODO: Test it in postman
     public void deleteDoctor(Long id) {
         if (!doctorRepository.existsById(id)) {
             throw new UserNotFoundException("Doctor with id " + id + " is not found!");
         }
         doctorRepository.deleteById(id);
+        List<Prescription> prescriptions = prescriptionRepository.findByDoctorId(id);
+        System.out.println("prescriptions = " + prescriptions);
+        for(Prescription prescription : prescriptions){
+                prescriptionRepository.deleteByDoctorId(id);
+        }
+
+        List<Appointment> appointments = appointmentRepository.findByDoctorId(id);
+        for(Appointment appointment : appointments){
+                prescriptionRepository.deleteByDoctorId(id);
+        }
     }
 
 

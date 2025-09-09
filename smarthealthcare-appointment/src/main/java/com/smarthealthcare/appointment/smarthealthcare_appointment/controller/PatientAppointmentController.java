@@ -18,6 +18,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -37,6 +38,8 @@ public class PatientAppointmentController {
         this.userRepository = userRepository;
     }
 
+
+    // TODO: Implement Appointment + Prescription RESPONSE DTOs
     @PostMapping
     public ResponseEntity<AppointmentResponse> bookAppointment(@Valid @RequestBody AppointmentRequest doctorRequest) {
         // get logged-in patient id from DB
@@ -60,7 +63,7 @@ public class PatientAppointmentController {
                 appointment.getAppointmentStartTime(),
                 appointment.getAppointmentEndTime(),
                 appointment.getAppointmentDay(),
-                appointment.getStatus().name(),
+                appointment.getStatus(),
                 appointment.getDoctor().getName(),
                 appointment.getPatient().getName()
         );
@@ -85,4 +88,25 @@ public class PatientAppointmentController {
         Long patientId = patient.getId();
         return ResponseEntity.ok("Appointment#" + appointmentId + " cancelled successfully by patient#" + patientId);
     }
+
+    // Doctor views their appointments
+    @GetMapping("/doctor/{doctorId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsForDoctor(@PathVariable Long doctorId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsForDoctor(doctorId);
+        return ResponseEntity.ok(appointments);
+    }
+
+    // Patient views their appointments
+    @GetMapping("/patient/{patientId}")
+    public ResponseEntity<List<Appointment>> getAppointmentsForPatient(@PathVariable Long patientId) {
+        List<Appointment> appointments = appointmentService.getAppointmentsForPatient(patientId);
+        return ResponseEntity.ok(appointments);
+    }
+
+    @GetMapping("/doctor/{doctorId}/today")
+    public ResponseEntity<List<Appointment>> getTodaysAppointmentsForDoctor(@PathVariable Long doctorId) {
+        List<Appointment> appointments = appointmentService.getTodaysAppointmentsForDoctor(doctorId);
+        return ResponseEntity.ok(appointments);
+    }
+
 }

@@ -13,6 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.List;
@@ -139,5 +140,65 @@ public class AppointmentService {
     // Read all appointments
     public List<Appointment> getAllAppointments() {
         return appointmentRepository.findAll();
+    }
+
+    // Doctor views all their appointments
+    public List<Appointment> getAppointmentsForDoctor(Long doctorId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+        Long userId = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
+
+        Doctor doctor = doctorRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("Doctor with userID " + userId + " not found!"));
+
+        if (doctor.getId() != doctorId)
+            throw new IllegalArgumentException("Doctor#" + doctor.getId() + " can view only its own appointments");
+
+        return appointmentRepository.findByDoctorId(doctor.getId());
+    }
+
+    // Patient views all their appointments
+    public List<Appointment> getAppointmentsForPatient(Long patientId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println("Cancel appointment: authentication = " + authentication);
+
+        String username = authentication.getName();
+        Long userId = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
+
+        Patient patient = patientRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("Patient with userID " + userId + " not found!"));
+
+        if (patient.getId() != patientId)
+            throw new IllegalArgumentException("Patient#" + patient.getId() + " can view only its own appointments");
+
+        return appointmentRepository.findByPatientId(patient.getId());
+    }
+
+    public List<Appointment> getTodaysAppointmentsForDoctor(Long doctorId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+        Long userId = userRepository.findByUsername(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"))
+                .getId();
+
+        Doctor doctor = doctorRepository.findByUserId(userId)
+                .orElseThrow(() -> new UserNotFoundException("Doctor with userID " + userId + " not found!"));
+
+        if (doctor.getId() != doctorId)
+            throw new IllegalArgumentException("Doctor#" + doctor.getId() + " can view only its own appointments");
+
+        LocalDate today = LocalDate.now();
+
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+
+        return appointmentRepository.findByDoctorIdAndAppointmentStartTimeBetween(
+                doctorId, startOfDay, endOfDay
+        );
     }
 }

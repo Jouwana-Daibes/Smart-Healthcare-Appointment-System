@@ -4,13 +4,13 @@ import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.response
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.PatientDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserAlreadyExistsException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserNotFoundException;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Patient;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Role;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.model.User;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.model.*;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.AppointmentRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PatientRepository;
+import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PrescriptionRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.UserRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.Authentication;
@@ -29,12 +29,16 @@ public class PatientService {
     private final PatientRepository patientRepository;
     private final PasswordEncoder passwordEncoder;
     private final UserRepository userRepository;
+    private PrescriptionRepository prescriptionRepository;
+    private AppointmentRepository appointmentRepository;
 
     @Autowired
-    public PatientService(PatientRepository patientRepository, PasswordEncoder passwordEncoder, UserRepository userRepository) {
+    public PatientService(PatientRepository patientRepository, PasswordEncoder passwordEncoder, UserRepository userRepository, PrescriptionRepository prescriptionRepository, AppointmentRepository appointmentRepository) {
         this.patientRepository = patientRepository;
         this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
+        this.prescriptionRepository = prescriptionRepository;
+        this.appointmentRepository = appointmentRepository;
     }
 
 //    // Admin registers new patient
@@ -92,11 +96,22 @@ public class PatientService {
     }
 
     // Delete doctor
-    public void deleteDoctor(Long id) {
+    //TODO: Test it in postman
+    @Transactional
+    public void deletePatient(Long id) {
         if (!patientRepository.existsById(id)) {
             throw new UserNotFoundException("Patient with id " + id + " is not found!");
         }
         patientRepository.deleteById(id);
+        List<Prescription> prescriptions = prescriptionRepository.findByPatientId(id);
+        for(Prescription prescription : prescriptions){
+                prescriptionRepository.deleteByPatientId(id);
+            }
+
+        List<Appointment> appointments = appointmentRepository.findByDoctorId(id);
+        for(Appointment appointment : appointments){
+                prescriptionRepository.deleteByPatientId(id);
+        }
     }
 
 
