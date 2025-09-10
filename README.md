@@ -56,16 +56,11 @@ com.smarthealthcare.appointment
 - Include JWT in `Authorization` header:
 
 ---
+## 6. Security
 
-## 6. Doctor Management
-
-- **Entity:** `Doctor`
-- **Repository, Service, Controller** implemented
-- CRUD operations:
-  - **POST /api/doctors** → ADMIN only
-  - **PUT /api/doctors/{id}** → ADMIN only
-  - **DELETE /api/doctors/{id}** → ADMIN only
-  - **GET /api/doctors** → ADMIN, DOCTOR, PATIENT
+- JWT filter intercepts each request, validates the token, and sets the authentication in `SecurityContextHolder`.
+- `@PreAuthorize` checks user roles against method access.
+- Spring Security’s filter chain ensures authentication and authorization on all protected endpoints.
 
 ---
 
@@ -91,35 +86,119 @@ com.smarthealthcare.appointment
 
 ---
 
-## 8. Security
+## Doctor Management
 
-- JWT filter intercepts each request, validates the token, and sets the authentication in `SecurityContextHolder`.
-- `@PreAuthorize` checks user roles against method access.
-- Spring Security’s filter chain ensures authentication and authorization on all protected endpoints.
+- **Entity:** `Doctor`
+- **Repository, Service, Controller** implemented
+- CRUD operations:
+  - **POST /api/doctors** → ADMIN only
+  - **PUT /api/doctors/{id}** → ADMIN only
+  - **DELETE /api/doctors/{id}** → ADMIN only
+  - **GET /api/doctors** → ADMIN, DOCTOR, PATIENT
+
+---
+  ## Patient Management
+
+The Patient Management module of the Smart Healthcare Appointment System includes the following functionalities:
+
+### a. Admin Registers New Patients
+- Only users with the `ADMIN` role can create/register new patients.
+- Admin provides patient details: name, email.
+- The system stores patient data in the database.
+
+### b. Patients Update Their Personal Details
+- Patients can update their own profile information.
+- Security checks ensure that a patient can only update their own details, not other patients' data.
+- Fields that can be updated include:
+  - `name`
+  - `email`
+- All updates are saved to the database.
 
 ---
 
-## 9. Future Improvements
+## Appointment Management
 
-- Patient appointment management
-- Prescription management
-- Logging & monitoring
-- Unit and integration tests
+The **Appointment Management** module handles all operations related to doctor-patient appointments, ensuring smooth scheduling and avoiding conflicts.  
 
+### Features
+- **Book Appointments:** Patients can request appointments with a specific doctor at a chosen date and time.  
+- **Prevent Double-Booking:** The system checks doctor availability and prevents scheduling conflicts.  
+- **View Appointments:** Doctors can see their appointments for today or any specific date.  
+- **Update Appointment Status:** Doctors can mark appointments as `SCHEDULED`, `COMPLETED`, or `CANCELED`.  
+- **Role-Based Access:** Only authorized users (patients and doctors) can perform appointment actions.  
+
+### Implementation
+1. **Database**  
+   - **MySQL** is used to store appointment records.  
+   - Each appointment includes: `appointmentId`, `doctorId`, `patientId`, `startTime`, `endTime`, and `status`.
+
+2. **Service Layer**  
+   - Validates appointment requests to **ensure no overlapping time slots**.  
+   - Handles business logic for status updates and retrieval of appointments.  
+
+3. **Controller Layer**  
+   - REST APIs allow patients to **book and view appointments**.  
+   - Doctors can **retrieve their schedule** and update the status of appointments.  
+
+4. **Validation & Error Handling**  
+   - Prevents double-booking with clear error messages.  
+   - Returns meaningful responses when doctors or patients are not available.  
+
+5. **Testing**  
+   - Unit tests cover scenarios like double-booking, invalid requests, and appointment status updates.  
+
+### Example API Endpoints
+- `POST /appointments` – Book a new appointment  
+- `GET /appointments/doctor/{id}` – Get all appointments for a doctor  
+- `PUT /appointments/{id}/status` – Update appointment status  
+
+### Benefits
+- Ensures doctors’ time slots are efficiently managed.  
+- Improves patient experience by preventing scheduling conflicts.  
+- Provides real-time updates for both doctors and patients.  
 ---
-## 10. Running the Project
+## Prescription Management
 
-1. Clone the repo:  
-```bash
-git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.git
-```
+The **Prescription Management** module allows doctors to create prescriptions for patients and enables patients to access them securely.  
+
+### Features
+- **Create Prescriptions:** Doctors can add prescriptions during appointments, including medicines, dosage, and instructions.  
+- **View Prescriptions:** Patients can securely view their prescriptions in their portal.  
+- **Link to Appointments:** Each prescription is associated with a specific appointment, doctor, and patient.  
+- **Role-Based Access:** Only authorized doctors can create prescriptions, and patients can only view their own prescriptions.  
+
+### Implementation
+1. **Database**  
+   - **MongoDB** is used to store prescription documents for flexible and scalable storage.  
+   - Each prescription contains: `prescriptionId`, `appointmentId`, `doctorId`, `patientId`, `medicines`, and `instructions`.
+
+2. **Service Layer**  
+   - Handles validation to ensure prescriptions are only created for valid appointments.  
+   - Manages retrieval of prescriptions for patients and doctors.
+
+3. **Controller Layer**  
+   - REST APIs allow doctors to create prescriptions and patients to view them.  
+   - Secure endpoints are protected using JWT authentication.
+
+4. **Validation & Error Handling**  
+   - Prevents creating prescriptions for non-existent appointments.  
+   - Returns meaningful messages when unauthorized access is attempted.  
+
+5. **Testing**  
+   - Unit tests ensure prescriptions are correctly created, retrieved, and linked to appointments.  
+
+### Example API Endpoints
+- `POST /prescriptions` – Create a new prescription  
+- `GET /prescriptions/patient/{id}` – Get all prescriptions for a patient  
+- `GET /prescriptions/appointment/{id}` – Get prescription for a specific appointment  
+
+### Benefits
+- Centralized storage ensures prescriptions are consistent and easily accessible.  
+- Patients can securely access their prescriptions online.  
+- Doctors can efficiently manage and track patient medications.
 ---
- - Configure application.properties with your database credentials.
 
-- Build & run:
-
-   - mvn spring-boot:run
-
+## Unit Testing
 - Test endpoints using Postman.
 
 ## DoctorControllerTest
@@ -168,23 +247,90 @@ The following CRUD operations are covered:
 - Business logic should be tested separately in service-layer unit tests.  
 - Mocked dependencies ensure isolation and reproducibility of tests.
 
-  ## Patient Management
+## 1. PatientController Testing
 
-The Patient Management module of the Smart Healthcare Appointment System includes the following functionalities:
+### Endpoints Tested
+- `PUT /api/patients/{id}` → Update patient info
+- `PATCH /api/patients/{id}` → Partial update
+- `GET /api/patients/{id}` → Get patient by ID
+- `GET /api/patients` → Get all patients
+- `DELETE /api/patients/{id}` → Delete patient
+- `GET /api/patients/MyRecords` → Get patient medical records
 
-### a. Admin Registers New Patients
-- Only users with the `ADMIN` role can create/register new patients.
-- Admin provides patient details: name, email.
-- The system stores patient data in the database.
+### Key Test Cases
+1. **Update Patient Info (PUT)**
+   - Update own profile as `PATIENT` → **Success**
+   - Update another patient's profile → **403 Forbidden**
+   - Admin updates any patient → **Success**
 
-### b. Patients Update Their Personal Details
-- Patients can update their own profile information.
-- Security checks ensure that a patient can only update their own details, not other patients' data.
-- Fields that can be updated include:
-  - `name`
-  - `email`
-- All updates are saved to the database.
+2. **Patch Patient (PATCH)**
+   - Patch own profile → **Success**
+   - Patch another patient → **403 Forbidden**
+   - Mock `EntityMapper.toPatientDTO()` to avoid `NullPointerException`.
 
+3. **Get Patient By ID**
+   - Existing patient → **200 OK**
+   - Non-existent patient → **500 Internal Server Error**
 
+4. **Delete Patient**
+   - Deletion by `ADMIN` → **204 No Content**
+   - Deletion by `PATIENT` → **403 Forbidden**
+   - Deletes associated prescriptions, appointments, and medical records.
 
+5. **Get My Records**
+   - Existing patient → **200 OK**
+   - Non-existent patient → **500 Internal Server Error**
+
+### Common Issues & Fixes
+- **403 Forbidden**: Ensure `@WithMockUser` role and username match the mocked user.
+---
+
+## 2. MedicalRecordController Testing
+
+### Endpoints Tested
+- `POST /api/doctors/records/{doctorId}` → Add medical record
+
+### Key Test Cases
+- Success → **200 OK**, validate JSON fields
+- Doctor not found → **500 Internal Server Error**
+- Invalid input → **400 Bad Request**
+- Empty prescriptions/lab reports → **200 OK**, validate empty lists
+
+### Fixes
+- Use `any(MedicalRecordRequestDTO.class)` in `when()` for `medicalRecordService.addRecord()`.
+- Match `doctorId` using `eq()` to avoid Mockito issues.
+- Use `@WithMockUser(roles = {"DOCTOR"})` for authentication.
+
+---
+
+## 3. AppointmentService Testing (Double Booking)
+
+### Scenario
+Prevent overlapping appointments for the same doctor.
+
+### Key Test Case
+- Booking an appointment overlapping an existing one → **IllegalArgumentException: "Oops! Time slot already taken"**
+
+### Common Pitfalls
+- `"Oops! Doctor is not available at this time"` occurs if appointment times do not match doctor's start/end time.
+- Ensure **appointment time is within the doctor's schedule**.
+
+```java
+doctor.setStartTime(LocalDateTime.of(2025, 9, 11, 9, 0));
+doctor.setEndTime(LocalDateTime.of(2025, 9, 11, 17, 0));
+doctor.setAvailableDays("MON"); // Day of the week
+
+## Running the Project
+
+1. Clone the repo:  
+```bash
+git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.git
+```
+---
+ - Configure application.properties with your database credentials.
+
+- Build & run:
+
+   - mvn spring-boot:run
+- Test endpoints using Postman.
 
