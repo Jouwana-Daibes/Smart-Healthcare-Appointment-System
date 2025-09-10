@@ -2,6 +2,7 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.repository;
 
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
+import jakarta.persistence.Cacheable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -9,6 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
+@Cacheable
 public interface DoctorRepository extends JpaRepository<Doctor, Long> {
     Doctor save(Doctor doctor);
     Optional<Doctor> findByEmail(String email);

@@ -12,6 +12,7 @@ import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.Pr
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -73,7 +74,7 @@ public class DoctorService {
 
     // Delete doctor
     @Transactional
-    //TODO: Test it in postman
+    @CacheEvict(value = "doctors", allEntries = true)
     public void deleteDoctor(Long id) {
         if (!doctorRepository.existsById(id)) {
             throw new UserNotFoundException("Doctor with id " + id + " is not found!");
@@ -91,7 +92,8 @@ public class DoctorService {
         }
     }
 
-
+    @Transactional
+    @CacheEvict(value = "doctors", allEntries = true)
     public DoctorDTO patchDoctor(Long id, Map<String, Object> updates) {
           Doctor doctor = doctorRepository.findById(id)
                   .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id + " is not found!"));
@@ -114,6 +116,8 @@ public class DoctorService {
         return EntityMapper.toDoctorDTO(updatedDoctor);
     }
 
+    @Transactional
+    @CacheEvict(value = "doctors", allEntries = true)
     public DoctorDTO updateDoctor(Long id, Doctor doctor){
         Doctor updatedDoctor = doctorRepository.findById(id)
                 .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + id + " not found"));

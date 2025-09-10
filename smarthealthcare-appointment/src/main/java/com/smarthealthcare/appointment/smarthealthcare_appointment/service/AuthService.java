@@ -63,6 +63,7 @@ public class AuthService {
     }
 
     @Transactional
+    @CacheEvict(value = "doctors", allEntries = true)
     public DoctorDTO registerDoctor(User user, Doctor doctor) {
         if (user.getPassword() == null || user.getPassword().isEmpty())
             throw new IllegalArgumentException("Password cannot be null or empty");
