@@ -366,7 +366,7 @@ Add the following dependencies to your `pom.xml`:
     <artifactId>cache-api</artifactId>
     <version>1.1.1</version>
 </dependency>
-
+---
 #### application.properties
 Enable Hibernate 2nd Level Cache
 spring.jpa.properties.hibernate.cache.use_second_level_cache=true
@@ -375,8 +375,8 @@ spring.jpa.properties.hibernate.cache.use_query_cache=true
 # Use JCache with Ehcache as the provider
 spring.jpa.properties.hibernate.cache.region.factory_class=org.hibernate.cache.jcache.JCacheRegionFactory
 spring.cache.jcache.config=classpath:ehcache.xml
-
-## Caching Annotations
+---
+#### Caching Annotations
 
 ###  `@Cacheable`
 **Purpose:** Marks a method’s return value to be stored in the cache.  
@@ -387,7 +387,7 @@ When the method is called again with the same parameters, Spring fetches the res
 
 ---
 
-###  `@CacheEvict`
+####  `@CacheEvict`
 **Purpose:** Clears (evicts) the cache when a method is called.  
 This is used when data changes, so stale/old data isn’t shown.  
 
