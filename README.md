@@ -54,6 +54,11 @@ com.smarthealthcare.appointment
 - Login: `/api/auth/login` (PUBLIC)
 - JWT tokens required for all other endpoints
 - Include JWT in `Authorization` header:
+### API Endpoints
+| Method | Endpoint             | Roles Allowed | Description                 |
+|--------|--------------------|---------------|-----------------------------|
+| POST   | /api/auth/register   | PUBLIC        | Register a new user         |
+| POST   | /api/auth/login      | PUBLIC        | Login and get JWT token     |
 
 ---
 ## 6. Security
@@ -63,22 +68,6 @@ com.smarthealthcare.appointment
 - Spring Security’s filter chain ensures authentication and authorization on all protected endpoints.
 
 ---
-
-## 7. API Endpoints
-
-#### Authentication
-| Method | Endpoint             | Roles Allowed | Description                 |
-|--------|--------------------|---------------|-----------------------------|
-| POST   | /api/auth/register   | PUBLIC        | Register a new user         |
-| POST   | /api/auth/login      | PUBLIC        | Login and get JWT token     |
-
-#### Doctor Management
-| Method | Endpoint                | Roles Allowed          | Description                          |
-|--------|------------------------|-----------------------|--------------------------------------|
-| GET    | /api/doctors            | ADMIN, DOCTOR, PATIENT | Retrieve all doctors                 |
-| POST   | /api/doctors            | ADMIN                 | Create a new doctor                  |
-| PUT    | /api/doctors/{id}       | ADMIN                 | Update an existing doctor            |
-| DELETE | /api/doctors/{id}       | ADMIN                 | Delete a doctor                       |
 
 **Notes:**
 - All requests except `/api/auth/**` require JWT authentication.
@@ -108,12 +97,11 @@ The Patient Management module of the Smart Healthcare Appointment System include
 
 ### b. Patients Update Their Personal Details
 - Patients can update their own profile information.
-- Security checks ensure that a patient can only update their own details, not other patients' data.
+- Security checks ensure that a patient can only update their own details, by checking if the authenticated logged in user id is the same as patient id using AuthenticationManager.  
 - Fields that can be updated include:
   - `name`
   - `email`
 - All updates are saved to the database.
-
 ---
 
 ## Appointment Management
@@ -123,18 +111,18 @@ The **Appointment Management** module handles all operations related to doctor-p
 ### Features
 - **Book Appointments:** Patients can request appointments with a specific doctor at a chosen date and time.  
 - **Prevent Double-Booking:** The system checks doctor availability and prevents scheduling conflicts.  
-- **View Appointments:** Doctors can see their appointments for today or any specific date.  
-- **Update Appointment Status:** Doctors can mark appointments as `SCHEDULED`, `COMPLETED`, or `CANCELED`.  
-- **Role-Based Access:** Only authorized users (patients and doctors) can perform appointment actions.  
+- **View Appointments:** Doctors can see their appointments for today or its all apointments.  
+- **Role-Based Access:** Only authorized users (patients and doctors) can perform appointment actions based on their authenticated user id to nly access their data.  
 
 ### Implementation
 1. **Database**  
    - **MySQL** is used to store appointment records.  
-   - Each appointment includes: `appointmentId`, `doctorId`, `patientId`, `startTime`, `endTime`, and `status`.
+   - Each appointment includes: `appointmentId`, `doctorId`, `patientId`, `startTime`, `endTime`, `availableDays`, and `status`.
 
 2. **Service Layer**  
-   - Validates appointment requests to **ensure no overlapping time slots**.  
-   - Handles business logic for status updates and retrieval of appointments.  
+   - Validates appointment requests to **ensure no overlapping time slots**.
+   - Validates appointments is within the doctor scheduele time.  
+   - Handles business logic for retrieval of appointments.  
 
 3. **Controller Layer**  
    - REST APIs allow patients to **book and view appointments**.  
@@ -145,7 +133,7 @@ The **Appointment Management** module handles all operations related to doctor-p
    - Returns meaningful responses when doctors or patients are not available.  
 
 5. **Testing**  
-   - Unit tests cover scenarios like double-booking, invalid requests, and appointment status updates.  
+   - Unit tests cover scenarios like double-booking.  
 
 ### Example API Endpoints
 - `POST /appointments` – Book a new appointment  
@@ -162,7 +150,7 @@ The **Appointment Management** module handles all operations related to doctor-p
 The **Prescription Management** module allows doctors to create prescriptions for patients and enables patients to access them securely.  
 
 ### Features
-- **Create Prescriptions:** Doctors can add prescriptions during appointments, including medicines, dosage, and instructions.  
+- **Create Prescriptions:** Doctors can add prescriptions during appointments, including medicines.  
 - **View Prescriptions:** Patients can securely view their prescriptions in their portal.  
 - **Link to Appointments:** Each prescription is associated with a specific appointment, doctor, and patient.  
 - **Role-Based Access:** Only authorized doctors can create prescriptions, and patients can only view their own prescriptions.  
@@ -200,18 +188,17 @@ The **Prescription Management** module allows doctors to create prescriptions fo
 
 ## Unit Testing
 - Test endpoints using Postman.
-
-## DoctorControllerTest
-
- - This module contains unit tests for the `DoctorController` REST API endpoints in the Smart Healthcare Appointment System.
- - The `DoctorControllerTest` class tests the **web layer** (controller) using `@WebMvcTest` without starting the full Spring Boot application context.  
-
 - Key points:
 
   - **Mocked dependencies**: `DoctorService` is mocked using `@MockBean` to isolate the controller logic.  
   - **HTTP simulation**: `MockMvc` is used to simulate HTTP requests and verify responses.  
   - **JSON handling**: `ObjectMapper` is used to serialize request bodies and deserialize response bodies.  
   - **Security**: Endpoints can be secured with roles (e.g., `ADMIN`) and tested using `@WithMockUser`.
+
+## DoctorControllerTest
+
+ - This module contains unit tests for the `DoctorController` REST API endpoints in the Smart Healthcare Appointment System.
+ - The `DoctorControllerTest` class tests the **web layer** (controller) using `@WebMvcTest` without starting the full Spring Boot application context.  
 
 ### Tested Operations
 
