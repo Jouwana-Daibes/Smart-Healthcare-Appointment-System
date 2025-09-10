@@ -337,6 +337,65 @@ doctor.setEndTime(LocalDateTime.of(2025, 9, 11, 17, 0));
 doctor.setAvailableDays("MON"); // Day of the week
 ```
 ---
+## Caching (Doctor Data)
+
+The system uses **Hibernate First-Level and Second-Level Caching** along with **Spring Cache** to improve performance for frequently accessed doctor data.  
+
+---
+
+### Dependencies (Maven)
+Add the following dependencies to your `pom.xml`:
+
+```xml
+<!-- Ehcache for Hibernate -->
+<dependency>
+    <groupId>org.ehcache</groupId>
+    <artifactId>ehcache</artifactId>
+</dependency>
+
+<!-- Hibernate JCache integration -->
+<dependency>
+    <groupId>org.hibernate.orm</groupId>
+    <artifactId>hibernate-jcache</artifactId>
+    <version>6.2.7.Final</version>
+</dependency>
+
+<!-- JCache API -->
+<dependency>
+    <groupId>javax.cache</groupId>
+    <artifactId>cache-api</artifactId>
+    <version>1.1.1</version>
+</dependency>
+```
+---
+#### application.properties
+Enable Hibernate 2nd Level Cache
+spring.jpa.properties.hibernate.cache.use_second_level_cache=true
+spring.jpa.properties.hibernate.cache.use_query_cache=true
+
+# Use JCache with Ehcache as the provider
+spring.jpa.properties.hibernate.cache.region.factory_class=org.hibernate.cache.jcache.JCacheRegionFactory
+spring.cache.jcache.config=classpath:ehcache.xml
+---
+#### Caching Annotations
+
+###  `@Cacheable`
+**Purpose:** Marks a method’s return value to be stored in the cache.  
+When the method is called again with the same parameters, Spring fetches the result from the cache instead of hitting the database.  
+
+**Example use case in this project:**  
+- `getAllDoctors()` → returns a cached list of doctors.  
+
+---
+
+####  `@CacheEvict`
+**Purpose:** Clears (evicts) the cache when a method is called.  
+This is used when data changes, so stale/old data isn’t shown.  
+
+**Example use case in this project:**  
+- When an **admin adds, updates, or deletes a doctor**, the doctor cache is cleared to ensure the latest data is fetched next time.
+
+---
 ## Running the Project
 
 1. Clone the repo:  
