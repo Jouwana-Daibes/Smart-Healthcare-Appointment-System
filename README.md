@@ -101,6 +101,7 @@ public class LoggingAspect {
         logger.info("Exiting method: {} with result: {}", joinPoint.getSignature(), result);
     }
 }
+```
 ---
 
 ## Doctor Management
