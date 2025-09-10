@@ -96,8 +96,7 @@ public class PatientService {
         return EntityMapper.toPatientDTO(patient);
     }
 
-    // Delete doctor
-    //TODO: Test it in postman
+    // Delete patient
     @Transactional
     public void deletePatient(Long id) {
         if (!patientRepository.existsById(id)) {

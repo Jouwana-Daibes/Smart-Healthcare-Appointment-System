@@ -172,11 +172,9 @@ public class PrescriptionService {
         return prescriptionRepository.findByDoctorId(doctor.getId());
     }
 
-    // Patient views all their appointments
+    // Patient views all their prescriptions
     public List<Prescription> getPrescriptionsForPatient(Long patientId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Cancel appointment: authentication = " + authentication);
-
         String username = authentication.getName();
         Long userId = userRepository.findByUsername(username)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"))

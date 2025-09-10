@@ -2,14 +2,20 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.persistence.Cacheable;
+import org.hibernate.annotations.Cache;
+
 @Entity
 @Table(name = "doctors")
+@Cacheable
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class Doctor {
 
     @Id

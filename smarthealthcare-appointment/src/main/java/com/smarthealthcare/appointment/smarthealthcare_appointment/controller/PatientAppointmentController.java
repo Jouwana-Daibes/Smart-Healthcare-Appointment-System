@@ -52,8 +52,6 @@ public class PatientAppointmentController {
                 .orElseThrow(() -> new UserNotFoundException("Patient not found for user id: " + user.getId()));
 
         Long patientId = patient.getId();
-        System.out.println("In controlLer PATIENTiD = " + patientId);
-       // Long patientId = patient.getId();
         Appointment appointment = appointmentService.bookAppointment(doctorRequest.doctorId(), patientId, doctorRequest.startTime(), doctorRequest.endTime(), doctorRequest.Days());
 
         AppointmentResponse response = new AppointmentResponse(

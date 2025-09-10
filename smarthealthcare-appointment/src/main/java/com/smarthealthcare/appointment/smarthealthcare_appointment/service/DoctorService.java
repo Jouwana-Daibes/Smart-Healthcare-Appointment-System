@@ -1,7 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.service;
 
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
-import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserAlreadyExistsException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserNotFoundException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Appointment;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Doctor;
@@ -11,7 +10,6 @@ import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.Ap
 import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.DoctorRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.repository.PrescriptionRepository;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityMapper;
-import jakarta.persistence.Persistence;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -20,8 +18,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.stream.Collectors;
+
 
 
 /**
@@ -55,6 +53,11 @@ public class DoctorService {
 
     // Read all doctors
     public List<DoctorDTO> getAllDoctors() {
+        System.out.println("Fetching doctors from DB...  " +  doctorRepository.findAll()
+                .stream()
+                .map(EntityMapper::toDoctorDTO)
+                .collect(Collectors.toList()));
+
         return doctorRepository.findAll()
                 .stream()
                 .map(EntityMapper::toDoctorDTO)

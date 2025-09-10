@@ -71,7 +71,7 @@ public class AppointmentService {
             throw new IllegalArgumentException("Oops! Doctor is not available at this time");
         }
 
-        // Prevent overlapping appointments
+        // Prevent overlapping appointments - double booking
         boolean occupied = appointmentRepository.existsByDoctorIdAndTimeOverlapAndDay(
                 doctorId, requestedStart, requestedEnd, days
         );
@@ -115,7 +115,6 @@ public class AppointmentService {
 
     public void cancelAppointment(Long appointmentId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        System.out.println("Cancel appointment: authentication = " + authentication);
 
         String username = authentication.getName();
         Long userId = userRepository.findByUsername(username)

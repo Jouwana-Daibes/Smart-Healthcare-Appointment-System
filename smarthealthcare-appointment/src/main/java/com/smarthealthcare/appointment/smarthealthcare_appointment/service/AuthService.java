@@ -13,12 +13,15 @@ import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.EntityM
 import com.smarthealthcare.appointment.smarthealthcare_appointment.utils.JwtUtil;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.security.core.Authentication;
+import org.springframework.cache.annotation.CacheEvict;
+
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -35,7 +38,8 @@ public class AuthService {
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder, AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
+    public AuthService(UserRepository userRepo, PasswordEncoder passwordEncoder,
+                       AuthenticationManager authenticationManager, JwtUtil jwtUtil) {
         this.userRepository = userRepo;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
