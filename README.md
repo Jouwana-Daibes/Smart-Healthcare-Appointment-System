@@ -75,6 +75,34 @@ com.smarthealthcare.appointment
 
 ---
 
+## AOP Logging
+
+The project uses **Aspect-Oriented Programming (AOP)** to implement centralized logging across the application. This approach improves maintainability and makes debugging easier.
+
+### Features
+- Helps track user actions, such as booking /canceling appointments or updating prescriptions.  
+
+### Implementation
+1. **Aspect Class**
+```java
+@Aspect
+@Component
+public class LoggingAspect {
+
+    private static final Logger logger = LoggerFactory.getLogger(LoggingAspect.class);
+
+    @Before("execution(* com.smarthealthcare..*(..))")
+    public void logBefore(JoinPoint joinPoint) {
+        logger.info("Entering method: {} with arguments: {}", joinPoint.getSignature(), joinPoint.getArgs());
+    }
+
+    @AfterReturning(pointcut = "execution(* com.smarthealthcare..*(..))", returning = "result")
+    public void logAfter(JoinPoint joinPoint, Object result) {
+        logger.info("Exiting method: {} with result: {}", joinPoint.getSignature(), result);
+    }
+}
+---
+
 ## Doctor Management
 
 - **Entity:** `Doctor`
