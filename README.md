@@ -306,6 +306,7 @@ Prevent overlapping appointments for the same doctor.
 doctor.setStartTime(LocalDateTime.of(2025, 9, 11, 9, 0));
 doctor.setEndTime(LocalDateTime.of(2025, 9, 11, 17, 0));
 doctor.setAvailableDays("MON"); // Day of the week
+```
 ---
 ## Running the Project
 
