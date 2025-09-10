@@ -366,6 +366,7 @@ Add the following dependencies to your `pom.xml`:
     <artifactId>cache-api</artifactId>
     <version>1.1.1</version>
 </dependency>
+```
 ---
 #### application.properties
 Enable Hibernate 2nd Level Cache
