@@ -337,7 +337,7 @@ doctor.setEndTime(LocalDateTime.of(2025, 9, 11, 17, 0));
 doctor.setAvailableDays("MON"); // Day of the week
 ```
 ---
-## ⚡ Caching (Doctor Data)
+## Caching (Doctor Data)
 
 The system uses **Hibernate First-Level and Second-Level Caching** along with **Spring Cache** to improve performance for frequently accessed doctor data.  
 
