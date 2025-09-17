@@ -430,22 +430,37 @@ git clone https://github.com/<your-username>/smart-healthcare-appointment.git
 cd smart-healthcare-appointment
 ```
 ---
-2. **Build the Spring Boot backend Docker image:
+2. Before running docker build, you must build the JAR locally using Maven:
 
- - docker build -t smart-healthcare-backend ./backend
+### Using Maven
+```bash
+mvn clean package
+```
+This will create the JAR in target/:
+
+- target/smart-health-care-appointment-0.0.1-SNAPSHOT.jar
+
+Then you can run:
+```bash
+docker build -t smart-healthcare-backend 
+```
+3. **Build the Spring Boot backend Docker image**:
+```bash
+docker build -t smart-healthcare-backend ./backend
+```
 ---
 
-3. Start all services using Docker Compose:
+4. **Start all services using Docker Compose**:
 ```bash
  docker-compose up -d
 ```
 ---
-4. Verify running containers:
+5. **Verify running containers**:
 ```bash
 docker ps
 ```
 ---
-5. Access the application:
+6. **Access the application**:
 ```bash
 use Postman to send requests
 ```
