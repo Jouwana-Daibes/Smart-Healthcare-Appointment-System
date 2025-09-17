@@ -461,9 +461,8 @@ docker ps
 ```
 ---
 6. **Access the application**:
-```bash
-use Postman to send requests
-```
+- use Postman to send requests
+
 ---
 #### Notes:
  - The application connects to databases using container names (shs_mysql, shs_mongo) instead of localhost.
