@@ -1,6 +1,7 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.requestDTOs;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 public class RegistrationDoctorRequest {
     private String username;
@@ -8,14 +9,14 @@ public class RegistrationDoctorRequest {
     private String name;
     private String email;
     private String speciality;
-    LocalDateTime startTime;        // e.g., 09:00
-    LocalDateTime endTime;           // e.g., 17:00
+    LocalTime startTime;        // e.g., 09:00
+    LocalTime endTime;           // e.g., 17:00
     String availableDays;
 
     public RegistrationDoctorRequest() {
     }
 
-    public RegistrationDoctorRequest(String username, String password, String name, String email, String speciality, LocalDateTime startTime, LocalDateTime endTime, String availableDays) {
+    public RegistrationDoctorRequest(String username, String password, String name, String email, String speciality, LocalTime startTime, LocalTime endTime, String availableDays) {
         this.username = username;
         this.password = password;
         this.name = name;
@@ -66,19 +67,19 @@ public class RegistrationDoctorRequest {
         this.speciality = speciality;
     }
 
-    public LocalDateTime getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 

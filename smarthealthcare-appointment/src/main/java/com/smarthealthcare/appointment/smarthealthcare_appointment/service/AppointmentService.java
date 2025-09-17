@@ -1,5 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.service;
 
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.AppointmentResponse;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.DoctorDTO;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.exception.UserNotFoundException;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.*;
@@ -42,12 +43,12 @@ public class AppointmentService {
 
 
     public Appointment bookAppointment(Long doctorId, Long patientId,
-                                       LocalDateTime requestedStart,
-                                       LocalDateTime requestedEnd,
+                                       LocalTime requestedStart,
+                                       LocalTime requestedEnd,
                                        String days) {
 
         // Validate that end time is after start time
-        if (requestedEnd.isBefore(requestedStart) || requestedEnd.isEqual(requestedStart)) {
+        if (!requestedEnd.isAfter(requestedStart)) {
             throw new IllegalArgumentException("Appointment end time must be after start time");
         }
 
@@ -55,17 +56,20 @@ public class AppointmentService {
         Doctor doctor = doctorRepository.findById(doctorId)
                 .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + doctorId + " not found"));
 
+        System.out.println("Doctor " + doctor.getId() + "doctor Id = " + doctorId + "doctor name = " + doctor.getName());
         // Check if requested day is in doctor's availableDays
-        DayOfWeek dayOfWeek = requestedStart.getDayOfWeek(); // e.g., MONDAY
-        if (!isDoctorAvailableOnDay(doctor.getAvailableDays(), dayOfWeek)) {
+
+        if (!isDoctorAvailableOnDay(doctor.getAvailableDays(), days)) {
             throw new IllegalArgumentException("Oops! Doctor is not available on this day");
         }
 
         // Check if requested time is within startTime and endTime
-        LocalDateTime startTime = doctor.getStartTime();
-        LocalDateTime endTime = doctor.getEndTime();
-        LocalDateTime appointmentStartTime = requestedStart;
-        LocalDateTime appointmentEndTime = requestedEnd;
+        LocalTime startTime = doctor.getStartTime();
+        LocalTime endTime = doctor.getEndTime();
+        LocalTime appointmentStartTime = requestedStart;
+        LocalTime appointmentEndTime = requestedEnd;
+
+
 
         if (appointmentStartTime.isBefore(startTime) || appointmentEndTime.isAfter(endTime)) {
             throw new IllegalArgumentException("Oops! Doctor is not available at this time");
@@ -96,15 +100,19 @@ public class AppointmentService {
     }
 
     // check if doctor works on the requested day
-    private boolean isDoctorAvailableOnDay(String availableDays, DayOfWeek requestedDay) {
+    private boolean isDoctorAvailableOnDay(String availableDays, String requestedDay) {
         if (availableDays == null || availableDays.isEmpty()) return false;
 
+        // Convert requestedDay String to DayOfWeek
+        DayOfWeek requested = DayOfWeekShortDay.fromString(requestedDay.trim());
+        System.out.println("requested  = " + requested + "requested day string = " + requestedDay);
         // Handle single days or ranges like "Mon-Fri"
         if (availableDays.contains("-")) {
             String[] parts = availableDays.split("-");
             DayOfWeek start = DayOfWeekShortDay.fromString(parts[0].trim());
+            System.out.println("start = " + start + "start.value = " + start.getValue());
             DayOfWeek end = DayOfWeekShortDay.fromString(parts[1].trim());
-            return requestedDay.getValue() >= start.getValue() && requestedDay.getValue() <= end.getValue();
+            return requested.getValue() >= start.getValue() && requested.getValue() <= end.getValue();
         } else {
             DayOfWeek day = DayOfWeekShortDay.fromString(availableDays.trim());
             return requestedDay.equals(day);
@@ -177,7 +185,7 @@ public class AppointmentService {
         return appointmentRepository.findByPatientId(patient.getId());
     }
 
-    public List<Appointment> getTodaysAppointmentsForDoctor(Long doctorId) {
+    public List<AppointmentResponse> getTodaysAppointmentsForDoctor(Long doctorId) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         String username = authentication.getName();
@@ -191,13 +199,26 @@ public class AppointmentService {
         if (doctor.getId() != doctorId)
             throw new IllegalArgumentException("Doctor#" + doctor.getId() + " can view only its own appointments");
 
-        LocalDate today = LocalDate.now();
+        //LocalDate today = LocalDate.now();
 
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.atTime(LocalTime.MAX);
+      //  LocalTime startOfDay = today.atStartOfDay();
+      //  LocalTime endOfDay = today.atTime(LocalTime.MAX);
 
-        return appointmentRepository.findByDoctorIdAndAppointmentStartTimeBetween(
-                doctorId, startOfDay, endOfDay
+        // Get today’s day of the week
+        DayOfWeek today = LocalDate.now().getDayOfWeek(); // MONDAY
+        // 2. Map to short name using your enum
+        String todayShort = null;
+        for (DayOfWeekShortDay sd : DayOfWeekShortDay.values()) {
+            if (sd.toDayOfWeek() == today) {
+                todayShort = sd.getShortName(); // "Mon", "Tue", etc.
+                break;
+            }
+        }
+
+        // Convert to String matching stored values
+        String todayDay = today.name(); // "MONDAY"
+        return appointmentRepository.findByDoctorIdAndAppointmentDay(
+                doctorId, todayShort
         );
     }
 }

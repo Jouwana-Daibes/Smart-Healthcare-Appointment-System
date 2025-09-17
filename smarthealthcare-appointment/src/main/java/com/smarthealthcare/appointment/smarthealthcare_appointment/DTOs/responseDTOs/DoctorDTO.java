@@ -9,8 +9,8 @@ public record DoctorDTO(
         String email,
         String speciality,
         // Recurring schedule
-        LocalDateTime startTime,         // e.g., 09:00
-        LocalDateTime endTime,           // e.g., 17:00
+        LocalTime startTime,         // e.g., 09:00
+        LocalTime endTime,           // e.g., 17:00
         String availableDays,
         UserDTO user
 ) {}

@@ -1,5 +1,6 @@
 package com.smarthealthcare.appointment.smarthealthcare_appointment.repository;
 
+import com.smarthealthcare.appointment.smarthealthcare_appointment.DTOs.responseDTOs.AppointmentResponse;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Appointment;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Patient;
 import com.smarthealthcare.appointment.smarthealthcare_appointment.model.Prescription;
@@ -8,7 +9,9 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,8 +32,8 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
             "AND a.appointmentEndTime > :requestedStartTime)")
     boolean existsByDoctorIdAndTimeOverlapAndDay(
             @Param("doctorId") Long doctorId,
-            @Param("requestedStartTime") LocalDateTime requestedStartTime,
-            @Param("requestedEndTime") LocalDateTime requestedEndTime,
+            @Param("requestedStartTime") LocalTime requestedStartTime,
+            @Param("requestedEndTime") LocalTime requestedEndTime,
             @Param("day") String day
     );
 
@@ -41,11 +44,16 @@ public interface AppointmentRepository extends JpaRepository<Appointment, Long> 
     List<Appointment> findByDoctorId(Long doctorId);
     // Get all appointments for a specific patient
     List<Appointment> findByPatientId(Long patientId);
+//    List<Appointment> findByDoctorIdAndAppointmentStartTimeBetween(
+//            Long doctorId,
+//            LocalTime startOfDay,
+//            LocalTime endOfDay
+//    );
 
-    List<Appointment> findByDoctorIdAndAppointmentStartTimeBetween(
+    List<AppointmentResponse> findByDoctorIdAndAppointmentDay(
             Long doctorId,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay
+            String appointmentDay
     );
+
 
 }

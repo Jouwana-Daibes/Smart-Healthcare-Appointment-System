@@ -22,13 +22,15 @@ public class MedicalRecordService {
     private final UserRepository userRepository;
     private final DoctorRepository doctorRepository;
     private final MedicalRecordRepository medicalRecordRepository;
+    private final AppointmentRepository appointmentRepostory;
 
     @Autowired
-    public MedicalRecordService(PatientRepository patientRepository, UserRepository userRepository, DoctorRepository doctorRepository, MedicalRecordRepository medicalRecordRepository) {
+    public MedicalRecordService(PatientRepository patientRepository, UserRepository userRepository, DoctorRepository doctorRepository, MedicalRecordRepository medicalRecordRepository, AppointmentRepository appointmentRepository) {
         this.patientRepository = patientRepository;
         this.userRepository = userRepository;
         this.doctorRepository = doctorRepository;
         this.medicalRecordRepository = medicalRecordRepository;
+        this.appointmentRepostory = appointmentRepository;
     }
 
     public List<MedicalRecord> getRecordsByPatientId(Long patientId) {
@@ -42,7 +44,7 @@ public class MedicalRecordService {
         Patient patient = patientRepository.findById(patientId)
                 .orElseThrow(() -> new UserNotFoundException("Patient with ID " + patientId + " not found!"));
 
-        if (patient.getId() != patientId)
+        if (patient.getUser().getId() != userId)
             throw new IllegalArgumentException("Patient#" + patient.getId() + " can view its own records only");
 
         return medicalRecordRepository.findByPatientId(patientId);
@@ -60,9 +62,8 @@ public class MedicalRecordService {
         Doctor doctor = doctorRepository.findByUserId(userId)
                 .orElseThrow(() -> new UserNotFoundException("Doctor with ID " + doctorId + " not found!"));
 
-        if (doctor.getId() != doctorId)
+        if (doctor.getId() != doctorId || !appointmentRepostory.existsByDoctorIdAndPatientId(doctor.getId(), request.getPatientId()) )
             throw new IllegalArgumentException("Doctor#" + doctor.getId() + " can create records for its patients only");
-        System.out.println("url doctor id = " + doctorId + " doctor id " + doctor.getId());
         MedicalRecord record = new MedicalRecord();
         record.setPatientId(request.getPatientId());
         record.setPatientName(request.getPatientName());

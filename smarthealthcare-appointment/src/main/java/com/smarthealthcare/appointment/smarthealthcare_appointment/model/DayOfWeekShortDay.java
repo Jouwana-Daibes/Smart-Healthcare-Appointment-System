@@ -20,6 +20,7 @@ public enum DayOfWeekShortDay {
     }
 
     public DayOfWeek toDayOfWeek() {
+
         return dayOfWeek;
     }
 
@@ -31,4 +32,9 @@ public enum DayOfWeekShortDay {
         }
         throw new IllegalArgumentException("Invalid day: " + s);
     }
+
+    public String getShortName() {
+        return shortName;
+    }
+
 }

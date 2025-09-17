@@ -32,6 +32,7 @@ import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -108,8 +109,8 @@ class DoctorControllerTest {
                 "Dr. Emily",
                 "emily@hospital.com",
                 "Cardiology",
-                LocalDateTime.of(2025, 1, 1, 9, 0),
-                LocalDateTime.of(2025, 1, 1, 17, 0),
+                LocalTime.of(9, 0),
+                LocalTime.of(17, 0),
                 "Mon-Fri",
                 new UserDTO(100L, "emilyUser")
         );
@@ -130,8 +131,8 @@ class DoctorControllerTest {
                 "Dr. Smith",
                 "smith@hospital.com",
                 "Neurology",
-                LocalDateTime.of(2025, 1, 1, 9, 0),
-                LocalDateTime.of(2025, 1, 1, 17, 0),
+                LocalTime.of(9, 0),
+                LocalTime.of(17, 0),
                 "Tue-Thu",
                 new UserDTO(101L, "smithUser")
         );
@@ -158,7 +159,7 @@ class DoctorControllerTest {
     void testUpdateDoctorNotFound() throws Exception {
         DoctorDTO updateDTO = new DoctorDTO(
                 999L, "Dr. Ghost", "ghost@hospital.com", "Unknown",
-                LocalDateTime.now(), LocalDateTime.now(), "Mon-Fri", null
+                LocalTime.now().now(), LocalTime.now(), "Mon-Fri", null
         );
 
         when(doctorService.updateDoctor(eq(999L), any(Doctor.class)))

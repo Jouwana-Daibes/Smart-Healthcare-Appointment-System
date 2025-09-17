@@ -14,6 +14,7 @@ import org.mockito.MockitoAnnotations;
 
 import java.time.LocalDateTime;
 import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,10 +45,10 @@ class AppointmentServiceTest {
         doctor = new Doctor();
         doctor.setId(1L);
         doctor.setName("Dr. Emily");
-        doctor.setStartTime(LocalDateTime.of(2025, 9, 11, 9, 0));
-        doctor.setEndTime(LocalDateTime.of(2025, 9, 11, 17, 0));
+        doctor.setStartTime(LocalTime.of(9, 0));
+        doctor.setEndTime(LocalTime.of(17, 0));
 
-        doctor.setAvailableDays("MON-FRI");
+        doctor.setAvailableDays("Mon-Fri");
 
         // Patient setup
         patient = new Patient();
@@ -60,9 +61,9 @@ class AppointmentServiceTest {
 
     @Test
     void testDoubleBookingThrowsException() {
-        LocalDateTime requestedStart = LocalDateTime.of(2025, 9, 11, 10, 0);
-        LocalDateTime requestedEnd = LocalDateTime.of(2025, 9, 11, 11, 0);
-        String day = DayOfWeek.MONDAY.toString();
+        LocalTime requestedStart = LocalTime.of(10, 0);
+        LocalTime requestedEnd = LocalTime.of(11, 0);
+        String day = "Mon";
 
         // Mocks
         when(doctorRepository.findById(1L)).thenReturn(Optional.of(doctor));

@@ -17,6 +17,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -104,8 +105,8 @@ public class DoctorService {
                   case "email" -> doctor.setEmail((String) value);
                   case "name"  -> doctor.setName((String) value);
                   case "speciality" -> doctor.setSpeciality((String) value);
-                  case "startTime" -> doctor.setStartTime((LocalDateTime) value);
-                  case "endTime" -> doctor.setEndTime((LocalDateTime) value);
+                  case "startTime" -> doctor.setStartTime((LocalTime) value);
+                  case "endTime" -> doctor.setEndTime((LocalTime) value);
                   case "availableDays" -> doctor.setAvailableDays((String) value);
                   case "username" -> user.getUsername();
                   case "password" -> user.setPassword(passwordEncoder.encode(user.getPassword()));

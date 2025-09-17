@@ -4,10 +4,9 @@ package com.smarthealthcare.appointment.smarthealthcare_appointment.model;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 @Entity
-@Table(name = "appointments", // to prevent duplicates at DB level
-        uniqueConstraints = @UniqueConstraint(columnNames = {"doctor_id"}))
 public class Appointment {
 
     @Id
@@ -26,10 +25,10 @@ public class Appointment {
 
     // Appointment start and end times
     @Column(name = "appointment_start_time", nullable = false)
-    private LocalDateTime appointmentStartTime;
+    private LocalTime appointmentStartTime;
 
     @Column(name = "appointment_end_time", nullable = false)
-    private LocalDateTime appointmentEndTime;
+    private LocalTime appointmentEndTime;
 
     @Column(name = "appointment_day", nullable = false)
     private String appointmentDay;
@@ -40,7 +39,7 @@ public class Appointment {
     public Appointment() {
     }
 
-    public Appointment(Long id, Doctor doctor, Patient patient, LocalDateTime appointmentStartTime, LocalDateTime appointmentEndTime, String appointmentDay, Status status) {
+    public Appointment(Long id, Doctor doctor, Patient patient, LocalTime appointmentStartTime, LocalTime appointmentEndTime, String appointmentDay, Status status) {
         this.id = id;
         this.doctor = doctor;
         this.patient = patient;
@@ -74,19 +73,19 @@ public class Appointment {
         this.patient = patient;
     }
 
-    public LocalDateTime getAppointmentStartTime() {
+    public LocalTime getAppointmentStartTime() {
         return appointmentStartTime;
     }
 
-    public void setAppointmentStartTime(LocalDateTime appointmentStartTime) {
+    public void setAppointmentStartTime(LocalTime appointmentStartTime) {
         this.appointmentStartTime = appointmentStartTime;
     }
 
-    public LocalDateTime getAppointmentEndTime() {
+    public LocalTime getAppointmentEndTime() {
         return appointmentEndTime;
     }
 
-    public void setAppointmentEndTime(LocalDateTime appointmentEndTime) {
+    public void setAppointmentEndTime(LocalTime appointmentEndTime) {
         this.appointmentEndTime = appointmentEndTime;
     }
 

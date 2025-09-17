@@ -9,9 +9,9 @@ public record AppointmentResponse(
         Long id,
         Long doctorId,
         Long patientId,
-        LocalDateTime startTime,         // e.g., 09:00
-        LocalDateTime endTime,           // e.g., 17:00
-        String Days,
+        LocalTime appointmentStartTime,         // e.g., 09:00
+        LocalTime appointmentEndTime,           // e.g., 17:00
+        String appointmentDay,
         Status status,
         String doctorName,
         String patientName

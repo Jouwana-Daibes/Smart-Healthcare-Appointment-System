@@ -10,7 +10,7 @@ public record AppointmentRequest(
         @NotNull(message = "Doctor ID is required")
         Long doctorId,
         @NotNull(message = "Appointment time is required")
-        LocalDateTime startTime,         // e.g., 09:00
-        LocalDateTime endTime,           // e.g., 17:00
+        LocalTime startTime,         // e.g., 09:00
+        LocalTime endTime,           // e.g., 17:00
         String Days
         ) {}

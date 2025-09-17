@@ -28,8 +28,8 @@ public class Doctor {
     private String speciality;
     //private LocalDateTime availability;
     // Recurring schedule
-    private LocalDateTime startTime;         // e.g., 09:00
-    private LocalDateTime endTime;           // e.g., 17:00
+    private LocalTime startTime;         // e.g., 09:00
+    private LocalTime endTime;           // e.g., 17:00
     private String availableDays;
 
     @JoinColumn(name = "user_id", referencedColumnName = "id")
@@ -43,7 +43,7 @@ public class Doctor {
     public Doctor() {
     }
 
-    public Doctor(Long id, String email, String name, String speciality, LocalDateTime startTime, LocalDateTime endTime, String availableDays, User user, List<Appointment> appointments) {
+    public Doctor(Long id, String email, String name, String speciality, LocalTime startTime, LocalTime endTime, String availableDays, User user, List<Appointment> appointments) {
         this.id = id;
         this.email = email;
         this.name = name;
@@ -87,19 +87,19 @@ public class Doctor {
         this.speciality = speciality;
     }
 
-    public LocalDateTime getStartTime() {
+    public LocalTime getStartTime() {
         return startTime;
     }
 
-    public void setStartTime(LocalDateTime startTime) {
+    public void setStartTime(LocalTime startTime) {
         this.startTime = startTime;
     }
 
-    public LocalDateTime getEndTime() {
+    public LocalTime getEndTime() {
         return endTime;
     }
 
-    public void setEndTime(LocalDateTime endTime) {
+    public void setEndTime(LocalTime endTime) {
         this.endTime = endTime;
     }
 

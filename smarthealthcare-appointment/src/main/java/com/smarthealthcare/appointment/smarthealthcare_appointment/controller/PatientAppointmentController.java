@@ -102,8 +102,8 @@ public class PatientAppointmentController {
     }
 
     @GetMapping("/doctor/{doctorId}/today")
-    public ResponseEntity<List<Appointment>> getTodaysAppointmentsForDoctor(@PathVariable Long doctorId) {
-        List<Appointment> appointments = appointmentService.getTodaysAppointmentsForDoctor(doctorId);
+    public ResponseEntity<List<AppointmentResponse>> getTodaysAppointmentsForDoctor(@PathVariable Long doctorId) {
+        List<AppointmentResponse> appointments = appointmentService.getTodaysAppointmentsForDoctor(doctorId);
         return ResponseEntity.ok(appointments);
     }
 

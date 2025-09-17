@@ -73,8 +73,8 @@ public class PatientController {
         return ResponseEntity.noContent().build(); //  Returns 204
     }
 
-    @GetMapping("/MyRecords")
-    public ResponseEntity<List<MedicalRecordResponseDTO>> getMyRecords(Long patientId) {
+    @GetMapping("/MyRecords/{patientId}")
+    public ResponseEntity<List<MedicalRecordResponseDTO>> getMyRecords(@PathVariable Long patientId) {
         List<MedicalRecordResponseDTO> recordsDTOs = new ArrayList<>();
         List<MedicalRecord> records = medicalRecordService.getRecordsByPatientId(patientId);
         for(MedicalRecord record : records){
