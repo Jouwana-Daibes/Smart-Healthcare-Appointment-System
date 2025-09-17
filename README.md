@@ -398,7 +398,7 @@ This is used when data changes, so stale/old data isn’t shown.
 - When an **admin adds, updates, or deletes a doctor**, the doctor cache is cleared to ensure the latest data is fetched next time.
 
 ---
-### Smart Healthcare Appointment System - Docker Setup
+## Smart Healthcare Appointment System - Docker Setup
 
 This project is containerized using Docker and Docker Compose for easy deployment and setup.
 
