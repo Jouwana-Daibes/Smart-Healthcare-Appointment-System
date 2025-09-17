@@ -11,6 +11,7 @@ A Spring Boot 3 application to manage patients, doctors, appointments, prescript
 - Secure API endpoints with JWT filter
 - Passwords stored with BCrypt hashing
 - Request validation and global exception handling
+- Fully Dockerized for easy deployment
 
 ---
 
@@ -23,6 +24,7 @@ A Spring Boot 3 application to manage patients, doctors, appointments, prescript
 - MySQL 
 - JWT for authentication
 - Maven
+- Docker
 
 ---
 
@@ -396,17 +398,62 @@ This is used when data changes, so stale/old data isn’t shown.
 - When an **admin adds, updates, or deletes a doctor**, the doctor cache is cleared to ensure the latest data is fetched next time.
 
 ---
-## Running the Project
+## Smart Healthcare Appointment System - Docker Setup
 
-1. Clone the repo:  
+This project is containerized using Docker and Docker Compose for easy deployment and setup.
+
+---
+
+## Prerequisites
+- Docker installed on your system: [Docker Installation](https://docs.docker.com/get-docker/)
+- Docker Compose installed: [Docker Compose Installation](https://docs.docker.com/compose/install/)
+
+---
+
+## Default Credentials
+
+### MySQL
+- Username: `root`
+- Password: `root`
+- Database: `healthcare`
+
+### MongoDB
+- Username: `mongo`
+- Password: `mongo`
+---
+
+## Steps to Build and Run Containers
+
+1. **Clone the repository**:
 ```bash
-git clone https://github.com/Jouwana-Daibes/Smart-Healthcare-Appointment-System.git
+git clone https://github.com/<your-username>/smart-healthcare-appointment.git
+cd smart-healthcare-appointment
 ```
 ---
- - Configure application.properties with your database credentials.
+2. **Build the Spring Boot backend Docker image:
 
-- Build & run:
+ - docker build -t smart-healthcare-backend ./backend
+---
 
-   - mvn spring-boot:run
-- Test endpoints using Postman.
+3. Start all services using Docker Compose:
+```bash
+ docker-compose up -d
+```
+---
+4. Verify running containers:
+```bash
+docker ps
+```
+---
+5. Access the application:
+```bash
+use Postman to send requests
+```
+---
+#### Notes:
+ - The application connects to databases using container names (shs_mysql, shs_mongo) instead of localhost.
+
+ - Make sure the ports 8080 (backend), 3306 (MySQL), and 27017 (MongoDB) are free before starting.
+
+
 
