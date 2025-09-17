@@ -436,15 +436,19 @@ cd smart-healthcare-appointment
 ---
 
 3. Start all services using Docker Compose:
-
-- docker-compose up -d
+```bash
+ docker-compose up -d
+```
 ---
 4. Verify running containers:
-
- - docker ps
+```bash
+docker ps
+```
 ---
 5. Access the application:
- - use Postman to send requests
+```bash
+use Postman to send requests
+```
 ---
 #### Notes:
  - The application connects to databases using container names (shs_mysql, shs_mongo) instead of localhost.
